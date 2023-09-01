@@ -15,6 +15,8 @@ FetchContent_MakeAvailable(googletest)
 
 set(CMAKE_CXX_STANDARD 14)
 
+add_definitions(-DROOT_PATH="${CMAKE_CURRENT_SOURCE_DIR}/logs/")
+
 add_executable(${PROJECT_NAME}
         src/main.cpp
         src/timer.h
@@ -39,7 +41,7 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 # Define the test executable name
-set(TEST_EXECUTABLE_NAME cpptrader_test)
+set(TEST_EXECUTABLE_NAME ${PROJECT_NAME}_test)
 
 # Add the test executable target
 add_executable(

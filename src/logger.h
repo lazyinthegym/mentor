@@ -8,7 +8,11 @@
 
 class Logger  {
  public:
-  explicit Logger(const std::string& file_name) : log_file(file_name, std::ios_base::app) {}
+  explicit Logger(const std::string& file_name) : log_file(file_name, std::ios_base::app) {
+      // Empty the log file
+      log_file.close(); // Close the file
+      log_file.open(std::string(ROOT_PATH) + file_name, std::ios::trunc); // Reopen with truncation
+  }
 
   void log(const std::string& message) {
     auto now = std::chrono::system_clock::now();
