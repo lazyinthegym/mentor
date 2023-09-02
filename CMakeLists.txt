@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.22)
 project(mentor)
-
+set(CMAKE_CXX_STANDARD 14)
 
 # Download Gtest
 include(FetchContent)
@@ -13,9 +13,9 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 
-set(CMAKE_CXX_STANDARD 14)
 
-add_definitions(-DROOT_PATH="${CMAKE_CURRENT_SOURCE_DIR}/logs/")
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+add_definitions(-DLOGS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/logs/")
 
 add_executable(${PROJECT_NAME}
         src/main.cpp
@@ -46,7 +46,7 @@ set(TEST_EXECUTABLE_NAME ${PROJECT_NAME}_test)
 # Add the test executable target
 add_executable(
         ${TEST_EXECUTABLE_NAME}
-        test/hello_test.cpp
+        test/false_sharing.cpp
 )
 
 # Link necessary libraries to the test executable

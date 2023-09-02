@@ -11,10 +11,10 @@ class Timer {
     start_time = std::chrono::high_resolution_clock::now();
   }
 
-  double elapsed_seconds() const {
+  double elapsed_milliseconds() const {
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-    return duration.count() / 1000000.0; // Convert to seconds
+    return duration.count() / 1000.0; // Convert to seconds
   }
 
  private:
