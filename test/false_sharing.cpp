@@ -13,7 +13,7 @@
  * You can know the size of the cache line using `sysctl -a | grep cache`
  */
 struct AlignedAtomic {
-  alignas(128) std::atomic<int> counter{0};
+  alignas(64) std::atomic<int> counter{0};
 };
 
 void false_sharing(const int num_threads){
@@ -78,7 +78,7 @@ void false_sharing_solved(const int num_threads){
 /**
  * Show false sharing effect by doing the same work with different number of threads and show the speedup.
  */
-TEST(FalseSharing, FalseSharing) {
+TEST(FalseSharing, Happening) {
   Logger logger("false_sharing.txt");
 
   // holds the time needed using a single thread.
