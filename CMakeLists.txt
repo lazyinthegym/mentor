@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 project(mentor)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 
 # ========================
 # === External Libraries ===
@@ -16,6 +16,8 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+find_package(spdlog REQUIRED)
+
 # ========================
 # === Project Settings ===
 # ========================
@@ -28,6 +30,8 @@ add_executable(${PROJECT_NAME}
         src/timer.h
         src/logger.h
         )
+
+target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 
 # ========================
 # ======= Testing ========
@@ -48,6 +52,7 @@ add_executable(
 target_link_libraries(
         ${TEST_EXECUTABLE_NAME}
         GTest::gtest_main
+        spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
 )
 
 # Include GoogleTest

@@ -1,4 +1,8 @@
 # How to Build and Run
+## Prerequisites
+```shell
+brew install spdlog
+```
 
 ## Build
 ```shell
