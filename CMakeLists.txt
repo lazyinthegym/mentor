@@ -11,6 +11,7 @@ include(FetchContent)
 FetchContent_Declare(
         googletest
         URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -24,6 +25,7 @@ find_package(spdlog REQUIRED)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 add_definitions(-DLOGS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/logs/")
+add_definitions(-DRESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/")
 
 add_executable(${PROJECT_NAME}
         src/main.cpp
@@ -42,11 +44,14 @@ enable_testing()
 # Define the test executable name
 set(TEST_EXECUTABLE_NAME ${PROJECT_NAME}_test)
 
-# Add the test executable target
+file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
+message("The value of TEST_SOURCES is: ${TEST_SOURCES}")
+
 add_executable(
         ${TEST_EXECUTABLE_NAME}
-        test/false_sharing.cpp
+        ${TEST_SOURCES}
 )
+
 
 # Link necessary libraries to the test executable
 target_link_libraries(

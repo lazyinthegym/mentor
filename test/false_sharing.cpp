@@ -67,7 +67,8 @@ void false_sharing_solved(const int num_threads){
 
   // Spawn threads
   std::vector<std::thread> threads;
-  for(int i = 0; i < num_threads; i++) {
+  threads.reserve(num_threads);
+for(int i = 0; i < num_threads; i++) {
     threads.emplace_back(work, i);
   }
 

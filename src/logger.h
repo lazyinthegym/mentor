@@ -12,18 +12,23 @@
 
 class Logger {
  public:
-  explicit Logger(const std::string& file_name) : log_file(file_name, std::ios_base::app) {
+  explicit Logger(const std::string& file_name, bool std_cout = true) {
 
     auto full_file_path = std::string(LOGS_PATH) + file_name;
 
     // Delete the file if it exists
     std::remove(full_file_path.c_str());
 
-    // Create a spd-logger that logs to both the console and a file.
-    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(full_file_path, true);
 
-    spd_logger =  spdlog::logger("multi_sink", {console_sink, file_sink});
+    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(full_file_path, true);
+    spd_logger =  spdlog::logger("multi_sink", {file_sink});
+
+
+    // Add the console sink if std_cout is true
+    if (std_cout) {
+      auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+      spd_logger.sinks().push_back(console_sink);
+    }
 
     // disable automatic EOL. I will add it later when I want to.
     auto formatter = std::make_unique<spdlog::pattern_formatter>("%v", spdlog::pattern_time_type::local, std::string(""));
@@ -56,13 +61,6 @@ class Logger {
 
 
  private:
-  std::ofstream log_file;
   spdlog::logger spd_logger = spdlog::logger("");
-
-  template <typename T>
-  void log_data(const T& data) {
-    log_file << data;
-    std::cout  << data;
-  }
 };;
 #endif
