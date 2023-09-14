@@ -100,7 +100,7 @@ void parallelMergeSort(std::vector<std::string> &arr, int left, int right, int n
 }
 
 TEST(ParallelMergeSort, CalculateSpeedUp) {
-  // Generate random data
+
   std::vector<std::string> data = read_shuffled_words();
 
   // Create two different copies for each case
@@ -115,7 +115,7 @@ TEST(ParallelMergeSort, CalculateSpeedUp) {
   // Parallel Merge Sorting
   int num_threads = std::thread::hardware_concurrency(); // Use the number of available CPU cores
   Timer multi_timer;
-  parallelMergeSort(data_2, 0, data_2.size() - 1, num_threads);
+  parallelMergeSort(data_2, 0, data_2.size() - 1, num_threads - 1);
   auto multi_thread_time = multi_timer.elapsed_milliseconds();
 
   std::cout << "Using a Parallel Merge Sort with "<< num_threads << " threads, the speed up = "  << single_thread_time/multi_thread_time << std::endl;
