@@ -41,10 +41,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog $<$<BOOL:${MINGW}>:
 
 enable_testing()
 
-# Define the test executable name
+# Define the exercise executable name
 set(TEST_EXECUTABLE_NAME ${PROJECT_NAME}_test)
 
-file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
+file(GLOB_RECURSE TEST_SOURCES "exercise/*.cpp")
 message("The value of TEST_SOURCES is: ${TEST_SOURCES}")
 
 add_executable(
@@ -53,7 +53,7 @@ add_executable(
 )
 
 
-# Link necessary libraries to the test executable
+# Link necessary libraries to the exercise executable
 target_link_libraries(
         ${TEST_EXECUTABLE_NAME}
         GTest::gtest_main

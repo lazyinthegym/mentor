@@ -40,35 +40,41 @@ void merge_sub_ranges(std::vector<std::string> &arr, std::pair<int, int> first, 
   assert(first.second < second.first);
   assert(first.second + 1 == second.first);
 
-  std::vector<std::string> merged;
+  int merged_size = (second.second - first.first + 1);
+  std::vector<std::string> merged(merged_size);
+
   int i = first.first;
   int j = second.first;
+  int k = 0;
 
   while (i <= first.second && j <= second.second) {
     if (arr[i] <= arr[j]) {
-      merged.push_back(arr[i]);
+      merged[k] = std::move(arr[i]);
       i++;
     } else {
-      merged.push_back(arr[j]);
+      merged[k] = std::move(arr[j]);
       j++;
     }
+    k++;
   }
 
   // Copy any remaining elements from the first subrange
   while (i <= first.second) {
-    merged.push_back(arr[i]);
+    merged[k] = std::move(arr[i]);
     i++;
+    k++;
   }
 
   // Copy any remaining elements from the second subrange
   while (j <= second.second) {
-    merged.push_back(arr[j]);
+    merged[k] = std::move(arr[j]);
     j++;
+    k++;
   }
 
   // Copy the merged result back to the original array
-  for (int k = 0; k < merged.size(); k++) {
-    arr[first.first + k] = merged[k];
+  for (k = 0; k < merged_size; k++) {
+    arr[first.first + k] = std::move(merged[k]);
   }
 }
 
@@ -134,7 +140,7 @@ void parallel_sort(std::vector<std::string> &data, int num_threads) {
 /***********************************
 ***      Correctness Tests      ***
 ***********************************/
-TEST(ParallelSort, CorrectnessTest1) {
+TEST(ParallelSort, CorrectnessTest) {
   std::vector<std::string> arr = {"kiwi", "apple", "date", "cherry", "grape", "lemon", "banana", "fig", "juice"};
   parallel_sort(arr, 4);
   EXPECT_TRUE(std::is_sorted(arr.begin(), arr.end()));
@@ -144,7 +150,7 @@ TEST(ParallelSort, CorrectnessTest1) {
   EXPECT_EQ(arr, expected);
 }
 
-TEST(ParallelSort, CorrectnessTest2) {
+TEST(ParallelSort, CorrectnessTestWithLargeData) {
   std::vector<std::string> arr = read_shuffled_words();
   parallel_sort(arr, 9);
   EXPECT_TRUE(std::is_sorted(arr.begin(), arr.end()));
@@ -201,7 +207,7 @@ TEST(MergeSubRangesTest, CorrectnessTest) {
 ***      Performance Tests      ***
 ***********************************/
 
-TEST(ParallelSort, PerformanceTest) {
+TEST(ParallelSort, CompareToSingleThread) {
   std::vector<std::string> arr_1 = read_shuffled_words();
   std::vector<std::string> arr_2 = arr_1;
 
@@ -216,4 +222,10 @@ TEST(ParallelSort, PerformanceTest) {
 
   std::cout << "The Speed Up = " << std_time / algo_time << std::endl;
 
+}
+
+TEST(ParallelSort, WithLargeData) {
+  std::vector<std::string> arr = read_shuffled_words();
+  parallel_sort(arr, std::thread::hardware_concurrency() - 1);
+  EXPECT_TRUE(std::is_sorted(arr.begin(), arr.end()));
 }

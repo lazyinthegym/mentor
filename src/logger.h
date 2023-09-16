@@ -12,17 +12,18 @@
 
 class Logger {
  public:
-  explicit Logger(const std::string& file_name, bool std_cout = true) {
+  explicit Logger(const std::string& file_name = "", bool std_cout = true) {
 
-    auto full_file_path = std::string(LOGS_PATH) + file_name;
+    if (!file_name.empty()) {
+      auto full_file_path = std::string(LOGS_PATH) + file_name;
 
-    // Delete the file if it exists
-    std::remove(full_file_path.c_str());
+      // Delete the file if it exists
+      std::remove(full_file_path.c_str());
 
 
-    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(full_file_path, true);
-    spd_logger =  spdlog::logger("multi_sink", {file_sink});
-
+      auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(full_file_path, true);
+      spd_logger =  spdlog::logger("multi_sink", {file_sink});
+    }
 
     // Add the console sink if std_cout is true
     if (std_cout) {

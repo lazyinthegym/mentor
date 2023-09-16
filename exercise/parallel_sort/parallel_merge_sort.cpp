@@ -120,7 +120,7 @@ TEST(ParallelMergeSort, CalculateSpeedUp) {
 
   std::cout << "Using a Parallel Merge Sort with "<< num_threads << " threads, the speed up = "  << single_thread_time/multi_thread_time << std::endl;
 
-  //Compare with the std::sort result to test its correctness
+  //Compare with the std::sort result to exercise its correctness
   EXPECT_EQ(data_1, data_2);
 }
 
