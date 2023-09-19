@@ -4,8 +4,9 @@
 #include <thread>
 #include <algorithm>
 #include <fstream>
-#include <queue>
 #include "timer.h"
+#include "logger.h"
+#include "utils.h"
 
 namespace {
 std::vector<std::string> read_shuffled_words() {
@@ -78,7 +79,7 @@ void merge_sub_ranges(std::vector<std::string> &arr, std::pair<int, int> first, 
   }
 }
 
-void parallel_sort(std::vector<std::string> &data, int num_threads) {
+void my_sort(std::vector<std::string> &data, int num_threads) {
 
   // Calculate the number of elements each thread will handle
   size_t chunk_size = data.size() / num_threads;
@@ -140,9 +141,9 @@ void parallel_sort(std::vector<std::string> &data, int num_threads) {
 /***********************************
 ***      Correctness Tests      ***
 ***********************************/
-TEST(ParallelSort, CorrectnessTest) {
+TEST(MySort, CorrectnessTest) {
   std::vector<std::string> arr = {"kiwi", "apple", "date", "cherry", "grape", "lemon", "banana", "fig", "juice"};
-  parallel_sort(arr, 4);
+  my_sort(arr, 4);
   EXPECT_TRUE(std::is_sorted(arr.begin(), arr.end()));
 
   // Verify the merged result
@@ -150,9 +151,9 @@ TEST(ParallelSort, CorrectnessTest) {
   EXPECT_EQ(arr, expected);
 }
 
-TEST(ParallelSort, CorrectnessTestWithLargeData) {
+TEST(MySort, CorrectnessTestWithLargeData) {
   std::vector<std::string> arr = read_shuffled_words();
-  parallel_sort(arr, 9);
+  my_sort(arr, 9);
   EXPECT_TRUE(std::is_sorted(arr.begin(), arr.end()));
 }
 
@@ -207,7 +208,7 @@ TEST(MergeSubRangesTest, CorrectnessTest) {
 ***      Performance Tests      ***
 ***********************************/
 
-TEST(ParallelSort, CompareToSingleThread) {
+TEST(MySort, CompareToSingleThread) {
   std::vector<std::string> arr_1 = read_shuffled_words();
   std::vector<std::string> arr_2 = arr_1;
 
@@ -216,7 +217,7 @@ TEST(ParallelSort, CompareToSingleThread) {
   auto std_time = timer_1.elapsed_milliseconds();
 
   Timer timer_2;
-  parallel_sort(arr_2, std::thread::hardware_concurrency() - 1);
+  my_sort(arr_2, std::thread::hardware_concurrency() - 1);
   auto algo_time = timer_2.elapsed_milliseconds();
   EXPECT_TRUE(std::is_sorted(arr_2.begin(), arr_2.end()));
 
@@ -224,8 +225,31 @@ TEST(ParallelSort, CompareToSingleThread) {
 
 }
 
-TEST(ParallelSort, WithLargeData) {
+TEST(MySort, WithLargeData) {
   std::vector<std::string> arr = read_shuffled_words();
-  parallel_sort(arr, std::thread::hardware_concurrency() - 1);
+  my_sort(arr, std::thread::hardware_concurrency() - 1);
   EXPECT_TRUE(std::is_sorted(arr.begin(), arr.end()));
+}
+
+TEST(MySort, MultipleRuns) {
+  auto num_threads = std::thread::hardware_concurrency() - 1; // Use the number of available CPU cores minus this thread
+  Logger logger("multiple_my_sort_runs.txt");
+  std::vector<double> times;
+
+  std::vector<std::string> data = read_shuffled_words();
+
+  for ( int i = 1; i <= 20; i++) {
+    auto arr = data;
+
+    Timer timer;
+    my_sort(arr, num_threads);
+    auto elapsed = timer.elapsed_milliseconds();
+
+    times.emplace_back(elapsed);
+
+    logger << "Run #" << i << ", Time = " << elapsed << " ms" << std::endl;
+  }
+
+  double rounded_average = std::round(Utils::calculateMean(times) * std::pow(10, 5)) / std::pow(10, 5);
+  logger << "Average = " << rounded_average << " Standard Deviation = " << Utils::calculateStandardDeviation(times) << " ms" << std::endl;
 }

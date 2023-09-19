@@ -31,7 +31,8 @@ add_executable(${PROJECT_NAME}
         src/main.cpp
         src/timer.h
         src/logger.h
-        )
+        src/utils.h
+)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 
@@ -45,7 +46,6 @@ enable_testing()
 set(TEST_EXECUTABLE_NAME ${PROJECT_NAME}_test)
 
 file(GLOB_RECURSE TEST_SOURCES "exercise/*.cpp")
-message("The value of TEST_SOURCES is: ${TEST_SOURCES}")
 
 add_executable(
         ${TEST_EXECUTABLE_NAME}

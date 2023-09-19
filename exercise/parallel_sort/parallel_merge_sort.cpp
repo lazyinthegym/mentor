@@ -5,9 +5,10 @@
 #include <algorithm>
 #include <fstream>
 #include "timer.h"
+#include "logger.h"
+#include "utils.h"
 
 namespace {
-
 std::vector<std::string> read_shuffled_words(){
   // Input file path
   auto filePath = std::string(RESOURCES_PATH) + "shuffledWords.txt"; // Replace with your file path
@@ -124,10 +125,32 @@ TEST(ParallelMergeSort, CalculateSpeedUp) {
   EXPECT_EQ(data_1, data_2);
 }
 
-TEST(ParallelMergeSort, SingleCase) {
-  // Generate random data
+TEST(ParallelMergeSort, SingleRun) {
   std::vector<std::string> data = read_shuffled_words();
 
   auto num_threads = std::thread::hardware_concurrency(); // Use the number of available CPU cores
   parallelMergeSort(data, 0, data.size() - 1, num_threads);
+}
+
+TEST(ParallelMergeSort, MultipleRuns) {
+  auto num_threads = std::thread::hardware_concurrency() - 1; // Use the number of available CPU cores minus this thread
+  Logger logger("multiple_merge_sort_runs.txt");
+  std::vector<double> times;
+
+  std::vector<std::string> data = read_shuffled_words();
+
+  for ( int i = 1; i <= 20; i++) {
+    auto arr = data;
+
+    Timer timer;
+    parallelMergeSort(arr, 0, arr.size() - 1, num_threads);
+    auto elapsed = timer.elapsed_milliseconds();
+
+    times.emplace_back(elapsed);
+
+    logger << "Run #" << i << ", Time = " << elapsed << " ms" << std::endl;
+  }
+
+  double rounded_average = std::round(Utils::calculateMean(times) * std::pow(10, 5)) / std::pow(10, 5);
+  logger << "Average = " << rounded_average << " Standard Deviation = " << Utils::calculateStandardDeviation(times) << " ms" << std::endl;
 }

@@ -4,7 +4,7 @@ name: Test on Ubuntu
 
 on:
   push:
-    branches: [ "master", "build" ]
+    branches: [ "build" ]
   pull_request:
     branches: [ "master" ]
 
