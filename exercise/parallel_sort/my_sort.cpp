@@ -7,6 +7,7 @@
 #include "timer.h"
 #include "logger.h"
 #include "utils.h"
+#include "Thread.h"
 
 namespace {
 std::vector<std::string> read_shuffled_words() {
@@ -87,7 +88,7 @@ void my_sort(std::vector<std::string> &data, int num_threads) {
   std::set<std::pair<int, int>> init_sub_ranges{};
 
   // Create and launch threads to sort sub-ranges
-  std::vector<std::thread> threads;
+  std::vector<Thread> threads;
   for (int i = 0; i < num_threads; ++i) {
     int left = i * chunk_size;
     int right = (i == num_threads - 1) ? data.size() : (i + 1) * chunk_size;
@@ -99,8 +100,8 @@ void my_sort(std::vector<std::string> &data, int num_threads) {
     init_sub_ranges.emplace(left, right - 1);
   }
 
-  // Wait for all threads to finish
-  for (std::thread &t : threads) {
+  // Join all sorting threads
+  for (auto &t : threads) {
     t.join();
   }
 
@@ -108,7 +109,7 @@ void my_sort(std::vector<std::string> &data, int num_threads) {
 
   while (init_sub_ranges.size() != 1) { // This means that all sub-ranges are merged
     // Create and launch threads to merge sub-ranges
-    std::vector<std::thread> merging_threads;
+    std::vector<Thread> merging_threads;
 
     std::set<std::pair<int, int>> result_sub_ranges{};
 
@@ -129,7 +130,7 @@ void my_sort(std::vector<std::string> &data, int num_threads) {
     init_sub_ranges.insert(result_sub_ranges.begin(), result_sub_ranges.end());
 
     // Join all merging threads
-    for (std::thread &t : merging_threads) {
+    for (auto &t : merging_threads) {
       t.join();
     }
 
@@ -225,7 +226,7 @@ TEST(MySort, CompareToSingleThread) {
 
 }
 
-TEST(MySort, WithLargeData) {
+TEST(MySort, SingleRun) {
   std::vector<std::string> arr = read_shuffled_words();
   my_sort(arr, std::thread::hardware_concurrency() - 1);
   EXPECT_TRUE(std::is_sorted(arr.begin(), arr.end()));
@@ -233,7 +234,7 @@ TEST(MySort, WithLargeData) {
 
 TEST(MySort, MultipleRuns) {
   auto num_threads = std::thread::hardware_concurrency() - 1; // Use the number of available CPU cores minus this thread
-  Logger logger("multiple_my_sort_runs.txt");
+  Logger logger("my_sort_multiple_runs.txt");
   std::vector<double> times;
 
   std::vector<std::string> data = read_shuffled_words();

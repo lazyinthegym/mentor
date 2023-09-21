@@ -32,6 +32,7 @@ add_executable(${PROJECT_NAME}
         src/timer.h
         src/logger.h
         src/utils.h
+        src/Thread.h
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
