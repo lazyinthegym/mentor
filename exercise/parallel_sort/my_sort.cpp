@@ -10,6 +10,14 @@
 #include "Thread.h"
 
 namespace {
+
+// To test multiple ways of comparison
+bool less_than_or_equal(const std::string& a, const std::string& b) {
+//  return a <= b; // case #1
+//  return a <= b.c_str(); // case #2
+  return strcmp(a.c_str(), b.c_str()) <= 0; // case #3, this one is the fastest by a small margin
+}
+
 std::vector<std::string> read_shuffled_words() {
   // Input file path
   auto filePath = std::string(RESOURCES_PATH) + "shuffledWords.txt"; // Replace with your file path
@@ -50,7 +58,7 @@ void merge_sub_ranges(std::vector<std::string> &arr, std::pair<int, int> first, 
   int k = 0;
 
   while (i <= first.second && j <= second.second) {
-    if (arr[i] <= arr[j]) {
+    if (less_than_or_equal(arr[i], arr[j])) {
       merged[k] = std::move(arr[i]);
       i++;
     } else {
@@ -239,7 +247,7 @@ TEST(MySort, MultipleRuns) {
 
   std::vector<std::string> data = read_shuffled_words();
 
-  for ( int i = 1; i <= 20; i++) {
+  for ( int i = 1; i <= 30; i++) {
     auto arr = data;
 
     Timer timer;
