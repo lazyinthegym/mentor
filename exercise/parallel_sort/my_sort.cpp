@@ -15,7 +15,8 @@ namespace {
 bool less_than_or_equal(const std::string& a, const std::string& b) {
 //  return a <= b; // case #1
 //  return a <= b.c_str(); // case #2
-  return strcmp(a.c_str(), b.c_str()) <= 0; // case #3, this one is the fastest by a small margin
+//  return strcmp(a.c_str(), b.c_str()) <= 0; // case #3
+  return a.compare(b.c_str()) <= 0; // case #4, This one is the fastest
 }
 
 std::vector<std::string> read_shuffled_words() {
