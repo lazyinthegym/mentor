@@ -19,6 +19,10 @@ bool less_than_or_equal(const std::string& a, const std::string& b) {
   return a.compare(b.c_str()) <= 0; // case #4, This one is the fastest
 }
 
+bool less_than(const std::string& a, const std::string& b) {
+  return a.compare(b.c_str()) < 0; // case #4, This one is the fastest
+}
+
 std::vector<std::string> read_shuffled_words() {
   // Input file path
   auto filePath = std::string(RESOURCES_PATH) + "shuffledWords.txt"; // Replace with your file path
@@ -103,7 +107,7 @@ void my_sort(std::vector<std::string> &data, int num_threads) {
     int right = (i == num_threads - 1) ? data.size() : (i + 1) * chunk_size;
 
     threads.emplace_back([&data, left, right]() {
-      std::sort(data.begin() + left, data.begin() + right);
+      std::sort(data.begin() + left, data.begin() + right, less_than);
     });
 
     init_sub_ranges.emplace(left, right - 1);
