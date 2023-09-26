@@ -46,7 +46,7 @@ enable_testing()
 # Define the exercise executable name
 set(TEST_EXECUTABLE_NAME ${PROJECT_NAME}_test)
 
-file(GLOB_RECURSE TEST_SOURCES "exercise/*.cpp")
+file(GLOB_RECURSE TEST_SOURCES "exercises/*.cpp")
 
 add_executable(
         ${TEST_EXECUTABLE_NAME}
