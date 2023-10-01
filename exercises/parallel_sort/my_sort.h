@@ -8,25 +8,25 @@
 #include "logger.h"
 #include "utils.h"
 #include "Thread.h"
+#include <atomic>
 
 namespace MySort {
 
-double g_averageLength = 0;
-std::mutex mutex;
+/** Stats **/
+std::atomic<int> count(0);
+std::atomic<long long> total_length(0);
 
-void cal_stats(int string_length) {
-  std::lock_guard<std::mutex> lock(mutex);
-  static int count = 0;
+double get_average() {
+  // Calculate the average atomically
+  return total_length.load() / static_cast<double>(count.load());
+}
 
-  // Increment the count of strings
+void add_to_average(int string_length) {
+  // Increment the count of strings atomically
   count++;
 
-  // Update the total length
-  static long double total_length = 0;
+  // Update the total length atomically
   total_length += string_length;
-
-  // Calculate the average
-  g_averageLength = total_length / count;
 }
 
 // To test multiple ways of comparison
@@ -107,7 +107,7 @@ void merge_sub_ranges(std::vector<std::string> &arr, std::pair<int, int> first, 
 
   // Copy the merged result back to the original array
   for (k = 0; k < merged_size; k++) {
-    cal_stats(merged[k].size());
+    add_to_average(merged[k].size());
     arr[first.first + k] = std::move(merged[k]);
   }
 }

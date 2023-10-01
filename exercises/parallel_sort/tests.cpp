@@ -21,8 +21,10 @@ TEST(MySort, CorrectnessTest) {
   std::vector<std::string> expected = {"apple", "banana", "cherry", "date", "fig", "grape", "juice", "kiwi", "lemon"};
   EXPECT_EQ(expected, arr);
 
+
   // Verify the statistics
-  EXPECT_NEAR(4.7778, g_averageLength, 0.0001);
+  double expected_average = 4.7778;
+  EXPECT_NEAR(expected_average, get_average(), 0.0001);
 }
 
 TEST(MySort, CorrectnessTestWithLargeData) {
@@ -31,7 +33,8 @@ TEST(MySort, CorrectnessTestWithLargeData) {
   EXPECT_TRUE(std::is_sorted(arr.begin(), arr.end()));
 
   // Verify the statistics
-  EXPECT_NEAR(9.4228, g_averageLength, 0.0001);
+  double expected_average = 9.4228;
+  EXPECT_NEAR(expected_average, get_average(), 0.0001);
 }
 
 TEST(MergeSubRangesTest, CorrectnessTest) {
