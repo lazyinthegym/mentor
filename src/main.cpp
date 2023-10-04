@@ -1,14 +1,30 @@
 #include <iostream>
 #include <thread>
 #include "Thread.h"
+#include "timer.h"
+#include "logger.h"
+
+using namespace std;
 
 int main() {
+  std::mutex m;
+  int sum = 0;
+  atomic<int> sum2(0);
 
-  Thread th([]{std::this_thread::sleep_for(std::chrono::milliseconds(5000));});
+  Timer timer;
+  for(int i = 0; i < 10000000; i++) {
+    std::lock_guard<std::mutex> lock(m);
+    sum++;
+  }
+  cout << "Mutex time = " << timer.elapsed_milliseconds() << " ms" << endl;
 
-  th.setScheduling(SCHED_FIFO, 1);
 
-  th.join();
+
+  Timer timer2;
+  for(int i = 0; i < 10000000; i++) {
+    sum2++;
+  }
+  cout << "Atomic time = " << timer2.elapsed_milliseconds() << " ms" << endl;
 
   return 0;
 }

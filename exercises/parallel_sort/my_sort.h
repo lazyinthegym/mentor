@@ -17,7 +17,6 @@ std::atomic<int> count(0);
 std::atomic<long long> total_length(0);
 
 double get_average() {
-  // Calculate the average atomically
   return total_length.load() / static_cast<double>(count.load());
 }
 
