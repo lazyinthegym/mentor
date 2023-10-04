@@ -42,7 +42,7 @@ bool less_than(const std::string& a, const std::string& b) {
 
 std::vector<std::string> read_shuffled_words() {
   // Input file path
-  auto filePath = std::string(RESOURCES_PATH) + "shuffledWords.txt"; // Replace with your file path
+  auto filePath = std::string(RESOURCES_PATH) + "shuffledWords.txt";
 
 // Open the input file
   std::ifstream inputFile(filePath);
