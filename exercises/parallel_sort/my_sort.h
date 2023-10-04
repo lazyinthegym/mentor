@@ -119,20 +119,22 @@ void my_sort(std::vector<std::string> &data, int num_threads) {
   std::set<std::pair<int, int>> init_sub_ranges{};
 
   // Create and launch threads to sort sub-ranges
-  std::vector<Thread> threads;
+  std::vector<Thread> sorting_threads;
   for (int i = 0; i < num_threads; ++i) {
     int left = i * chunk_size;
     int right = (i == num_threads - 1) ? data.size() : (i + 1) * chunk_size;
 
-    threads.emplace_back([&data, left, right]() {
+    sorting_threads.emplace_back([&data, left, right]() {
       std::sort(data.begin() + left, data.begin() + right, less_than);
     });
+
+    sorting_threads.back().set_max_priority();
 
     init_sub_ranges.emplace(left, right - 1);
   }
 
   // Join all sorting threads
-  for (auto &t : threads) {
+  for (auto &t : sorting_threads) {
     t.join();
   }
 
@@ -152,7 +154,7 @@ void my_sort(std::vector<std::string> &data, int num_threads) {
         merge_sub_ranges(data, first_range, second_range);
       });
 
-      merging_threads.back().setScheduling()
+      merging_threads.back().set_max_priority();
 
       // Erase the 2 ranges and put their combined range in result_sub_ranges
       init_sub_ranges.erase(init_sub_ranges.begin());

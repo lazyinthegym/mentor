@@ -118,7 +118,7 @@ TEST(MySort, MultipleRuns) {
 
   std::vector<std::string> data = read_shuffled_words();
 
-  for ( int i = 1; i <= 30; i++) {
+  for (int i = 1; i <= 30; i++) {
     auto arr = data;
 
     Timer timer;
@@ -131,6 +131,22 @@ TEST(MySort, MultipleRuns) {
   }
 
   double rounded_average = std::round(Utils::calculateMean(times) * std::pow(10, 5)) / std::pow(10, 5);
-  logger << "Average = " << rounded_average << " Standard Deviation = " << Utils::calculateStandardDeviation(times) << " ms" << std::endl;
+  logger << "Average = " << rounded_average << " Standard Deviation = " << Utils::calculateStandardDeviation(times)
+         << " ms" << std::endl;
 }
+
+TEST(MySort, ThreadsLadder) {
+  Logger logger("my_sort_ladder.txt");
+
+  std::vector<std::string> data = read_shuffled_words();
+
+  for (int num_threads = 1; num_threads <= 20; num_threads++) {
+    auto arr = data;
+
+    Timer timer;
+    my_sort(arr, num_threads);
+    logger << "Num of Threads = " << num_threads << ", Time = " << timer.elapsed_milliseconds() << " ms" << std::endl;
+  }
+}
+
 }
