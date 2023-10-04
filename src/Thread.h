@@ -23,7 +23,20 @@ class Thread : public std::thread
       std::cerr << "Failed to set Thread scheduling : " << std::strerror(errno) << std::endl;
 
       // something is wrong
-      exit(2);
+      exit(1);
+    }
+  }
+
+  /**
+   * Sets the maximum possible priority for the thread
+   */
+  void set_max_priority() {
+    sch_params.sched_priority = sched_get_priority_max(SCHED_FIFO);;
+    if(pthread_setschedparam(this->native_handle(), SCHED_FIFO, &sch_params)) {
+      std::cerr << "Failed to set Thread scheduling : " << std::strerror(errno) << std::endl;
+
+      // something is wrong
+      exit(1);
     }
   }
 

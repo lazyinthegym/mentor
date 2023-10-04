@@ -7,24 +7,22 @@
 using namespace std;
 
 int main() {
-  std::mutex m;
-  int sum = 0;
-  atomic<int> sum2(0);
+  vector<Thread> threads;
 
-  Timer timer;
-  for(int i = 0; i < 10000000; i++) {
-    std::lock_guard<std::mutex> lock(m);
-    sum++;
+  for (int i = 1; i <= 11; i++) {
+    threads.emplace_back(
+        [] {
+          Timer timer;
+          while (timer.elapsed_seconds() < 20) {
+          }
+        }
+    );
+    threads.back().set_max_priority();
   }
-  cout << "Mutex time = " << timer.elapsed_milliseconds() << " ms" << endl;
 
-
-
-  Timer timer2;
-  for(int i = 0; i < 10000000; i++) {
-    sum2++;
+  for (auto &t : threads) {
+    t.join();
   }
-  cout << "Atomic time = " << timer2.elapsed_milliseconds() << " ms" << endl;
 
   return 0;
 }

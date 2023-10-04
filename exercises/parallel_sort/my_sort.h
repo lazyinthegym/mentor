@@ -152,6 +152,8 @@ void my_sort(std::vector<std::string> &data, int num_threads) {
         merge_sub_ranges(data, first_range, second_range);
       });
 
+      merging_threads.back().setScheduling()
+
       // Erase the 2 ranges and put their combined range in result_sub_ranges
       init_sub_ranges.erase(init_sub_ranges.begin());
       init_sub_ranges.erase(init_sub_ranges.begin());
