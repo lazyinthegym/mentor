@@ -1,13 +1,18 @@
+#ifndef MENTOR_EXERCISES_TRIANGLES_TRIANGLES_H_
+#define MENTOR_EXERCISES_TRIANGLES_TRIANGLES_H_
+
 #include <iostream>
-#include <thread>
-#include <sstream>
-#include "timer.h"
-#include "logger.h"
+#include <tuple>
+#include <string>
+#include <fstream>
+#include <set>
 
-using namespace std;
+namespace Triangles {
+using Triangle = std::vector<double>;
 
-auto read_triangles() {
-  std::vector<std::tuple<double, double, double>> triangles;
+
+inline auto read_unique_triangles() {
+  std::set<Triangle> triangles;
 
   auto filePath = std::string(RESOURCES_PATH) + "triangles.txt";
 
@@ -25,7 +30,7 @@ auto read_triangles() {
     std::istringstream iss(line);
     double x, y, z;
     if (iss >> x >> y >> z) {
-      triangles.emplace_back(x, y, z);
+      triangles.emplace(std::vector<double>{x, y, z});
     } else {
       std::cerr << "Error reading line: " << line << std::endl;
     }
@@ -36,9 +41,5 @@ auto read_triangles() {
   return triangles;
 }
 
-int main() {
-
-  auto triangles = read_triangles();
-
-  return 0;
-}
+} // namespace Triangles
+#endif //MENTOR_EXERCISES_TRIANGLES_TRIANGLES_H_
