@@ -5,9 +5,9 @@ set(CMAKE_CXX_STANDARD 20)
 # ========================
 # === External Libraries ===
 # ========================
-
-# Download and include Google Test
 include(FetchContent)
+
+# ==== Google Test =====
 FetchContent_Declare(
         googletest
         URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
@@ -17,13 +17,20 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+# ==== Boost =====
+
+
 find_package(spdlog REQUIRED)
+find_package(Boost REQUIRED)
 
 # ========================
 # === Project Settings ===
 # ========================
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${Boost_INCLUDE_DIRS}
+)
 add_definitions(-DLOGS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/logs/")
 add_definitions(-DRESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/")
 

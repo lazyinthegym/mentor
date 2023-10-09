@@ -29,32 +29,31 @@ struct hash<std::vector<double>> {
 namespace Triangles {
 using Triangle = std::vector<double>;
 
+// Using inline to be able to use in multiple source files without duplicate definitions issues.
 inline auto read_unique_triangles() {
-  std::unordered_map<Triangle, bool> triangles;
+  std::unordered_map<std::vector<double>, bool> triangles;
 
   auto filePath = std::string(RESOURCES_PATH) + "triangles.txt";
 
-
   // Open the file
-  std::ifstream inputFile(filePath);
+  FILE* inputFile = fopen(filePath.c_str(), "r");
 
-  if (!inputFile.is_open()) {
+  if (!inputFile) {
     std::cerr << "Failed to open the file." << std::endl;
     exit(1); // Exit with an error code
   }
 
-  std::string line;
-  while (std::getline(inputFile, line)) {
-    std::istringstream iss(line);
+  char line[256];
+  while (fgets(line, sizeof(line), inputFile)) {
     double x, y, z;
-    if (iss >> x >> y >> z) {
+    if (sscanf(line, "%lf %lf %lf", &x, &y, &z) == 3) {
       triangles.emplace(std::vector<double>{x, y, z}, true);
     } else {
       std::cerr << "Error reading line: " << line << std::endl;
     }
   }
 
-  inputFile.close();
+  fclose(inputFile);
 
   return triangles;
 }
