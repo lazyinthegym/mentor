@@ -17,7 +17,6 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-# ==== Boost =====
 
 
 find_package(spdlog REQUIRED)
@@ -26,6 +25,9 @@ find_package(Boost REQUIRED)
 # ========================
 # === Project Settings ===
 # ========================
+
+# Address Sanitizer
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
 
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/src
