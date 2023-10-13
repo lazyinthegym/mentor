@@ -35,6 +35,31 @@ struct hash<Triangles::Triangle> {
 }
 
 namespace Triangles {
+
+/**
+ * Note:
+ * This is faster than using `sscanf(line, "%lf %lf %lf", &x, &y, &z)`
+ * `sscanf` has to first interpret the pattern, which what we avoid by directly reading the string.
+ */
+inline bool scan_triangle(char* line, double& x, double& y, double& z) {
+  char *endptr;
+  x = strtod(line, &endptr);
+  if (*endptr == ' ' || *endptr == '\t') {
+    endptr++; // Skip the space or tab
+    y = strtod(endptr, &endptr);
+    if (*endptr == ' ' || *endptr == '\t') {
+      endptr++; // Skip the space or tab
+      z = strtod(endptr, &endptr);
+      if (*endptr == '\r') {
+        // Parsing successful
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 // Using inline to be able to use in multiple source files without duplicate definitions issues.
 inline auto read_unique_triangles() {
   std::unordered_map<Triangle, bool> triangles;
@@ -49,10 +74,14 @@ inline auto read_unique_triangles() {
     exit(1); // Exit with an error code
   }
 
+  /**
+   * Note:
+   * C++ STD streams would have been easier to use. However, they where very slow compared to the c-style functions.
+   */
   char line[256];
   while (fgets(line, sizeof(line), inputFile)) {
     double x, y, z;
-    if (sscanf(line, "%lf %lf %lf", &x, &y, &z) == 3) {
+    if (scan_triangle(line, x, y, z)) {
       triangles[{x, y, z}] = true;
     } else {
       std::cerr << "Error reading line: " << line << std::endl;
