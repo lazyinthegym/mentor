@@ -27,6 +27,14 @@ class Utils {
     double variance = sumSquaredDifferences / data.size();
     return std::sqrt(variance);
   }
+
+  static std::string to_string(std::thread::id id) {
+    std::ostringstream ss;
+
+    ss << std::this_thread::get_id();
+
+    return ss.str();
+  }
 };
 
 #endif //MENTOR_SRC_UTILS_H_
